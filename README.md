@@ -1,5 +1,13 @@
 # 材质工坊 - Minecraft 材质包 AI 生成平台
 
+> 📝 **项目说明**
+>
+> **Important**
+>
+> - 本项目仅供个人学习使用，不保证稳定性，且不提供任何技术支持
+> - 使用者必须在遵循相关模型服务提供商的使用条款以及法律法规的情况下使用，不得用于非法用途
+> - 根据《生成式人工智能服务管理暂行办法》的要求，请勿对中国地区公众提供一切未经备案的生成式人工智能服务
+
 基于 AI 的 Minecraft 材质包一站式生成与编辑平台。输入一段文字描述，自动生成完整材质包；内置画布编辑器、多版本格式转换器和完整的订阅管理系统。
 
 ## 功能介绍
@@ -402,4 +410,13 @@ systemctl status mc-app
 
 ## 许可证
 
-本项目基于[若依框架](https://gitee.com/y_project/RuoYi)二次开发，遵循 [MIT License](LICENSE)。
+| 内容 | 许可证 |
+|---|---|
+| 程序代码 | [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html) |
+| 皮肤素材 / 图片资源 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
+
+本项目基于[若依框架](https://gitee.com/y_project/RuoYi)二次开发，代码遵循 GPL-3.0，图片资源遵循 CC BY-NC-SA 4.0。详见 [LICENSE](LICENSE)。
+
+---
+
+Copyright © 2024 MCSMI (Minecraft Character Skin Medical Institute). All rights reserved.
