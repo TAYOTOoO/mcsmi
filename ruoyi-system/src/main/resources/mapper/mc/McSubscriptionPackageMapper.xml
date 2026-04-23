@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McSubscriptionPackageMapper">
+
+    <resultMap type="McSubscriptionPackage" id="McSubscriptionPackageResult">
+        <result property="packageId"        column="package_id"        />
+        <result property="packageName"      column="package_name"      />
+        <result property="durationMonths"   column="duration_months"   />
+        <result property="amount"           column="amount"            />
+        <result property="monthlyPoints"    column="monthly_points"    />
+        <result property="discountRate"     column="discount_rate"     />
+        <result property="sort"             column="sort"              />
+        <result property="status"           column="status"            />
+        <result property="createTime"       column="create_time"       />
+        <result property="updateTime"       column="update_time"       />
+        <result property="remark"           column="remark"            />
+    </resultMap>
+
+    <sql id="selectMcSubscriptionPackageVo">
+        select package_id, package_name, duration_months, amount, monthly_points,
+               discount_rate, sort, status, create_time, update_time, remark
+        from mc_subscription_package
+    </sql>
+
+    <select id="selectMcSubscriptionPackageList" parameterType="McSubscriptionPackage" resultMap="McSubscriptionPackageResult">
+        <include refid="selectMcSubscriptionPackageVo"/>
+        <where>
+            <if test="packageName != null and packageName != ''">and package_name like concat('%', #{packageName}, '%')</if>
+            <if test="durationMonths != null">and duration_months = #{durationMonths}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+        </where>
+        order by sort asc, create_time desc
+    </select>
+
+    <select id="selectMcSubscriptionPackageByPackageId" parameterType="Long" resultMap="McSubscriptionPackageResult">
+        <include refid="selectMcSubscriptionPackageVo"/>
+        where package_id = #{packageId}
+    </select>
+
+    <!-- Select available packages for user purchase -->
+    <select id="selectAvailablePackages" resultMap="McSubscriptionPackageResult">
+        <include refid="selectMcSubscriptionPackageVo"/>
+        where status = '0'
+        order by sort asc
+    </select>
+
+    <insert id="insertMcSubscriptionPackage" parameterType="McSubscriptionPackage" useGeneratedKeys="true" keyProperty="packageId">
+        insert into mc_subscription_package
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="packageName != null and packageName != ''">package_name,</if>
+            <if test="durationMonths != null">duration_months,</if>
+            <if test="amount != null">amount,</if>
+            <if test="monthlyPoints != null">monthly_points,</if>
+            <if test="discountRate != null">discount_rate,</if>
+            <if test="sort != null">sort,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="packageName != null and packageName != ''">#{packageName},</if>
+            <if test="durationMonths != null">#{durationMonths},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="monthlyPoints != null">#{monthlyPoints},</if>
+            <if test="discountRate != null">#{discountRate},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMcSubscriptionPackage" parameterType="McSubscriptionPackage">
+        update mc_subscription_package
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="packageName != null and packageName != ''">package_name = #{packageName},</if>
+            <if test="durationMonths != null">duration_months = #{durationMonths},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="monthlyPoints != null">monthly_points = #{monthlyPoints},</if>
+            <if test="discountRate != null">discount_rate = #{discountRate},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where package_id = #{packageId}
+    </update>
+
+    <delete id="deleteMcSubscriptionPackageByPackageId" parameterType="Long">
+        delete from mc_subscription_package where package_id = #{packageId}
+    </delete>
+
+    <delete id="deleteMcSubscriptionPackageByPackageIds" parameterType="String">
+        delete from mc_subscription_package where package_id in
+        <foreach item="packageId" collection="array" open="(" separator="," close=")">
+            #{packageId}
+        </foreach>
+    </delete>
+
+</mapper>

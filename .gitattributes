@@ -1,0 +1,8 @@
+# 所有文件仓库内统一存储为LF，检出时Windows自动转CRLF、Linux/macOS保留LF
+* text=auto
+
+# 可选：指定二进制文件（如图片、压缩包）不做换行符转换（避免损坏）
+*.png binary
+*.jpg binary
+*.zip binary
+*.jar binary

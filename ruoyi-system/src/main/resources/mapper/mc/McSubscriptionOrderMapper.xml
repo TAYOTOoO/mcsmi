@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McSubscriptionOrderMapper">
+
+    <resultMap type="McSubscriptionOrder" id="McSubscriptionOrderResult">
+        <result property="orderId"          column="order_id"          />
+        <result property="orderNo"          column="order_no"          />
+        <result property="userId"           column="user_id"           />
+        <result property="packageId"        column="package_id"        />
+        <result property="packageName"      column="package_name"      />
+        <result property="durationMonths"   column="duration_months"   />
+        <result property="originalAmount"   column="original_amount"   />
+        <result property="actualAmount"     column="actual_amount"     />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="paymentTime"      column="payment_time"      />
+        <result property="tradeNo"          column="trade_no"          />
+        <result property="startTime"        column="start_time"        />
+        <result property="expireTime"       column="expire_time"       />
+        <result property="createTime"       column="create_time"       />
+        <result property="updateTime"       column="update_time"       />
+        <result property="remark"           column="remark"            />
+        <!-- Non-database fields for display -->
+        <result property="userName"         column="user_name"         />
+        <result property="nickName"         column="nick_name"         />
+    </resultMap>
+
+    <sql id="selectMcSubscriptionOrderVo">
+        select o.order_id, o.order_no, o.user_id, o.package_id, o.package_name, o.duration_months,
+               o.original_amount, o.actual_amount, o.payment_status, o.payment_method, o.payment_time,
+               o.trade_no, o.start_time, o.expire_time, o.create_time, o.update_time, o.remark,
+               u.user_name, u.nick_name
+        from mc_subscription_order o
+        left join sys_user u on o.user_id = u.user_id
+    </sql>
+
+    <select id="selectMcSubscriptionOrderList" parameterType="McSubscriptionOrder" resultMap="McSubscriptionOrderResult">
+        <include refid="selectMcSubscriptionOrderVo"/>
+        <where>
+            <if test="orderNo != null and orderNo != ''">and o.order_no = #{orderNo}</if>
+            <if test="userId != null">and o.user_id = #{userId}</if>
+            <if test="packageId != null">and o.package_id = #{packageId}</if>
+            <if test="paymentStatus != null">and o.payment_status = #{paymentStatus}</if>
+            <if test="paymentMethod != null and paymentMethod != ''">and o.payment_method = #{paymentMethod}</if>
+            <if test="userName != null and userName != ''">and u.user_name like concat('%', #{userName}, '%')</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- Begin time range -->
+                and date_format(o.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- End time range -->
+                and date_format(o.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+        order by o.create_time desc
+    </select>
+
+    <select id="selectMcSubscriptionOrderByOrderId" parameterType="Long" resultMap="McSubscriptionOrderResult">
+        <include refid="selectMcSubscriptionOrderVo"/>
+        where o.order_id = #{orderId}
+    </select>
+
+    <select id="selectMcSubscriptionOrderByOrderNo" parameterType="String" resultMap="McSubscriptionOrderResult">
+        <include refid="selectMcSubscriptionOrderVo"/>
+        where o.order_no = #{orderNo}
+    </select>
+
+    <!-- Select orders by user ID, ordered by create time descending -->
+    <select id="selectMcSubscriptionOrderListByUserId" parameterType="Long" resultMap="McSubscriptionOrderResult">
+        <include refid="selectMcSubscriptionOrderVo"/>
+        where o.user_id = #{userId}
+        order by o.create_time desc
+    </select>
+
+    <!-- Select timeout unpaid orders (created more than 30 minutes ago) -->
+    <select id="selectTimeoutUnpaidOrders" resultMap="McSubscriptionOrderResult">
+        <include refid="selectMcSubscriptionOrderVo"/>
+        where o.payment_status = 0
+          and o.create_time &lt; DATE_SUB(NOW(), INTERVAL 30 MINUTE)
+    </select>
+
+    <insert id="insertMcSubscriptionOrder" parameterType="McSubscriptionOrder" useGeneratedKeys="true" keyProperty="orderId">
+        insert into mc_subscription_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null and orderNo != ''">order_no,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="packageId != null">package_id,</if>
+            <if test="packageName != null and packageName != ''">package_name,</if>
+            <if test="durationMonths != null">duration_months,</if>
+            <if test="originalAmount != null">original_amount,</if>
+            <if test="actualAmount != null">actual_amount,</if>
+            <if test="paymentStatus != null">payment_status,</if>
+            <if test="paymentMethod != null">payment_method,</if>
+            <if test="paymentTime != null">payment_time,</if>
+            <if test="tradeNo != null">trade_no,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="expireTime != null">expire_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="packageId != null">#{packageId},</if>
+            <if test="packageName != null and packageName != ''">#{packageName},</if>
+            <if test="durationMonths != null">#{durationMonths},</if>
+            <if test="originalAmount != null">#{originalAmount},</if>
+            <if test="actualAmount != null">#{actualAmount},</if>
+            <if test="paymentStatus != null">#{paymentStatus},</if>
+            <if test="paymentMethod != null">#{paymentMethod},</if>
+            <if test="paymentTime != null">#{paymentTime},</if>
+            <if test="tradeNo != null">#{tradeNo},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="expireTime != null">#{expireTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMcSubscriptionOrder" parameterType="McSubscriptionOrder">
+        update mc_subscription_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNo != null and orderNo != ''">order_no = #{orderNo},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="packageId != null">package_id = #{packageId},</if>
+            <if test="packageName != null and packageName != ''">package_name = #{packageName},</if>
+            <if test="durationMonths != null">duration_months = #{durationMonths},</if>
+            <if test="originalAmount != null">original_amount = #{originalAmount},</if>
+            <if test="actualAmount != null">actual_amount = #{actualAmount},</if>
+            <if test="paymentStatus != null">payment_status = #{paymentStatus},</if>
+            <if test="paymentMethod != null">payment_method = #{paymentMethod},</if>
+            <if test="paymentTime != null">payment_time = #{paymentTime},</if>
+            <if test="tradeNo != null">trade_no = #{tradeNo},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="expireTime != null">expire_time = #{expireTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <!-- Update payment status to paid -->
+    <update id="updatePaymentStatusToPaid">
+        update mc_subscription_order
+        set payment_status = 1,
+            payment_time = sysdate(),
+            update_time = sysdate(),
+            <if test="tradeNo != null and tradeNo != ''">trade_no = #{tradeNo},</if>
+            <if test="paymentMethod != null and paymentMethod != ''">payment_method = #{paymentMethod},</if>
+            start_time = sysdate(),
+            expire_time = DATE_ADD(sysdate(), INTERVAL #{durationMonths} MONTH)
+        where order_no = #{orderNo}
+    </update>
+
+    <!-- Cancel timeout unpaid orders -->
+    <update id="cancelTimeoutOrders">
+        update mc_subscription_order
+        set payment_status = 2,
+            update_time = sysdate(),
+            remark = CONCAT(IFNULL(remark, ''), '订单超时自动取消 ')
+        where payment_status = 0
+          and create_time &lt; DATE_SUB(NOW(), INTERVAL 30 MINUTE)
+    </update>
+
+    <delete id="deleteMcSubscriptionOrderByOrderId" parameterType="Long">
+        delete from mc_subscription_order where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteMcSubscriptionOrderByOrderIds" parameterType="String">
+        delete from mc_subscription_order where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+</mapper>

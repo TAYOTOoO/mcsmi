@@ -1,0 +1,34 @@
+# ================================
+# 生产环境配置（Linux服务器）
+# 使用方式: --spring.profiles.active=prod
+# ================================
+
+# MC材质包配置 - 生产环境
+mc:
+  # 临时文件路径（生成的图片等）
+  temp:
+    path: /opt/data/www/wwwroot/mc/temp
+  # 材质文件路径
+  textures:
+    path: /opt/data/www/wwwroot/mc/textures
+  # 输出文件路径（材质包zip）
+  output:
+    path: /opt/data/www/wwwroot/mc/output
+
+# 文件上传路径 - 生产环境
+ruoyi:
+  profile: /opt/data/www/wwwroot/mc
+
+# 数据库配置 - 生产环境（外网生产库）
+spring:
+  datasource:
+    druid:
+      master:
+        url: jdbc:mysql://yourserverip:3306/mc?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: yourpassword
+  # Redis配置 - 生产环境
+  redis:
+    host: localhost
+    port: 6379
+    database: 0

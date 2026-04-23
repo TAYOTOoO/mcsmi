@@ -1,0 +1,43 @@
+{
+  "item": {
+    "diamond_pickaxe.png": "default_tool_diamondpick.png",
+    "diamond_sword.png": "default_tool_diamondsword.png",
+    "redstone.png": "default_mese_crystal_fragment.png",
+    "minecart.png": "bucket.png",
+    "bundle.png": "ebiomes_bucket_peas.png",
+    "enchanted_book.png": "farming_bread.png",
+    "emerald.png": "default_mese_crystal.png",
+    "gold_ingot.png": "default_gold_ingot.png",
+    "nether_star.png": "default_mese_crystal.png",
+    "name_tag.png": "default_stick.png",
+    "gold_nugget.png": "default_gold_lump.png",
+    "experience_bottle.png": "flowers_rose.png",
+    "clock_00.png": "default_apple.png",
+    "writable_book.png": "default_sapling.png",
+    "painting.png": "flowers_tulip.png",
+    "diamond.png": "default_mese_crystal.png",
+    "paper.png": "default_grass.png",
+    "compass_00.png": "default_apple.png",
+    "barrier.png": "flowers_mushroom_red.png",
+    "spyglass.png": "default_stick.png",
+    "blaze_powder.png": "default_mese_crystal_fragment.png",
+    "brush.png": "default_tool_woodaxe.png",
+    "stick.png": "default_stick.png",
+    "ender_eye.png": "default_mese_crystal.png",
+    "chest.png": "ebiomes_bucket_peas.png",
+    "arrow.png": "default_stick.png",
+    "map.png": "default_grass.png",
+    "book.png": "farming_bread.png"
+  },
+  "block": {
+    "stone_bricks.png": "default_bronze_block.png",
+    "cobblestone.png": "default_copper_block.png",
+    "oak_planks.png": "default_aspen_tree.png",
+    "deepslate_top.png": "default_coal_block.png",
+    "stone.png": "moreores_silver_block.png",
+    "dirt.png": "default_grass_side.png",
+    "nether_portal.png": "default_glass.png",
+    "gold_block.png": "default_gold_block.png",
+    "bedrock.png": "default_coal_block.png"
+  }
+}

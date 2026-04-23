@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McUserSubscriptionMapper">
+
+    <resultMap type="McUserSubscription" id="McUserSubscriptionResult">
+        <result property="subscriptionId"       column="subscription_id"       />
+        <result property="userId"               column="user_id"               />
+        <result property="subscriptionType"     column="subscription_type"     />
+        <result property="packageId"            column="package_id"            />
+        <result property="startTime"            column="start_time"            />
+        <result property="expireTime"           column="expire_time"           />
+        <result property="isPermanent"          column="is_permanent"          />
+        <result property="lastPointGrantMonth"  column="last_point_grant_month"/>
+        <result property="createTime"           column="create_time"           />
+        <result property="updateTime"           column="update_time"           />
+        <result property="remark"               column="remark"                />
+        <!-- Non-database fields for display -->
+        <result property="userName"             column="user_name"             />
+        <result property="nickName"             column="nick_name"             />
+        <result property="packageName"          column="package_name"          />
+        <result property="discountRate"         column="discount_rate"         />
+        <result property="monthlyPoints"        column="monthly_points"        />
+    </resultMap>
+
+    <sql id="selectMcUserSubscriptionVo">
+        select s.subscription_id, s.user_id, s.subscription_type, s.package_id, s.start_time, s.expire_time,
+               s.is_permanent, s.last_point_grant_month, s.create_time, s.update_time, s.remark,
+               u.user_name, u.nick_name,
+               p.package_name, p.discount_rate, p.monthly_points
+        from mc_user_subscription s
+        left join sys_user u on s.user_id = u.user_id
+        left join mc_subscription_package p on s.package_id = p.package_id
+    </sql>
+
+    <select id="selectMcUserSubscriptionList" parameterType="McUserSubscription" resultMap="McUserSubscriptionResult">
+        <include refid="selectMcUserSubscriptionVo"/>
+        <where>
+            <if test="userId != null">and s.user_id = #{userId}</if>
+            <if test="subscriptionType != null and subscriptionType != ''">and s.subscription_type = #{subscriptionType}</if>
+            <if test="isPermanent != null">and s.is_permanent = #{isPermanent}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- Start time range -->
+                and date_format(s.start_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- End time range -->
+                and date_format(s.expire_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+        order by s.create_time desc
+    </select>
+
+    <select id="selectMcUserSubscriptionBySubscriptionId" parameterType="Long" resultMap="McUserSubscriptionResult">
+        <include refid="selectMcUserSubscriptionVo"/>
+        where s.subscription_id = #{subscriptionId}
+    </select>
+
+    <select id="selectMcUserSubscriptionByUserId" parameterType="Long" resultMap="McUserSubscriptionResult">
+        <include refid="selectMcUserSubscriptionVo"/>
+        where s.user_id = #{userId}
+    </select>
+
+    <!-- Select diamond users eligible for monthly point grant -->
+    <select id="selectDiamondUsersForPointGrant" parameterType="String" resultMap="McUserSubscriptionResult">
+        <include refid="selectMcUserSubscriptionVo"/>
+        where s.subscription_type = 'diamond'
+          and s.is_permanent = 0
+          and NOW() &gt;= s.start_time
+          and NOW() &lt;= s.expire_time
+          and (s.last_point_grant_month is null or s.last_point_grant_month != #{currentMonth})
+    </select>
+
+    <!-- Select subscriptions expiring within 7 days -->
+    <select id="selectExpiringSoonSubscriptions" resultMap="McUserSubscriptionResult">
+        <include refid="selectMcUserSubscriptionVo"/>
+        where s.subscription_type = 'diamond'
+          and s.is_permanent = 0
+          and s.expire_time between NOW() and DATE_ADD(NOW(), INTERVAL 7 DAY)
+    </select>
+
+    <!-- Select expired subscriptions -->
+    <select id="selectExpiredSubscriptions" resultMap="McUserSubscriptionResult">
+        <include refid="selectMcUserSubscriptionVo"/>
+        where s.subscription_type = 'diamond'
+          and s.is_permanent = 0
+          and s.expire_time &lt; NOW()
+    </select>
+
+    <insert id="insertMcUserSubscription" parameterType="McUserSubscription" useGeneratedKeys="true" keyProperty="subscriptionId">
+        insert into mc_user_subscription
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="subscriptionType != null and subscriptionType != ''">subscription_type,</if>
+            <if test="packageId != null">package_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="expireTime != null">expire_time,</if>
+            <if test="isPermanent != null">is_permanent,</if>
+            <if test="lastPointGrantMonth != null and lastPointGrantMonth != ''">last_point_grant_month,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="subscriptionType != null and subscriptionType != ''">#{subscriptionType},</if>
+            <if test="packageId != null">#{packageId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="expireTime != null">#{expireTime},</if>
+            <if test="isPermanent != null">#{isPermanent},</if>
+            <if test="lastPointGrantMonth != null and lastPointGrantMonth != ''">#{lastPointGrantMonth},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMcUserSubscription" parameterType="McUserSubscription">
+        update mc_user_subscription
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="subscriptionType != null and subscriptionType != ''">subscription_type = #{subscriptionType},</if>
+            <if test="packageId != null">package_id = #{packageId},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="expireTime != null">expire_time = #{expireTime},</if>
+            <if test="isPermanent != null">is_permanent = #{isPermanent},</if>
+            <if test="lastPointGrantMonth != null">last_point_grant_month = #{lastPointGrantMonth},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where subscription_id = #{subscriptionId}
+    </update>
+
+    <!-- Update last point grant month -->
+    <update id="updateLastPointGrantMonth">
+        update mc_user_subscription
+        set last_point_grant_month = #{grantMonth},
+            update_time = sysdate()
+        where subscription_id = #{subscriptionId}
+    </update>
+
+    <!-- Extend subscription duration -->
+    <update id="extendSubscription">
+        update mc_user_subscription
+        set expire_time = DATE_ADD(IFNULL(
+                CASE
+                    WHEN expire_time &gt; NOW() THEN expire_time
+                    ELSE NOW()
+                END, NOW()), INTERVAL #{months} MONTH),
+            update_time = sysdate()
+        where subscription_id = #{subscriptionId}
+    </update>
+
+    <delete id="deleteMcUserSubscriptionBySubscriptionId" parameterType="Long">
+        delete from mc_user_subscription where subscription_id = #{subscriptionId}
+    </delete>
+
+    <delete id="deleteMcUserSubscriptionBySubscriptionIds" parameterType="String">
+        delete from mc_user_subscription where subscription_id in
+        <foreach item="subscriptionId" collection="array" open="(" separator="," close=")">
+            #{subscriptionId}
+        </foreach>
+    </delete>
+
+</mapper>

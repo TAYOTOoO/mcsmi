@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McSystemConfigMapper">
+
+    <resultMap type="McSystemConfig" id="McSystemConfigResult">
+        <result property="configId"    column="config_id"    />
+        <result property="configKey"   column="config_key"   />
+        <result property="configValue" column="config_value" />
+        <result property="configName"  column="config_name"  />
+        <result property="configType"  column="config_type"  />
+        <result property="remark"      column="remark"       />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"  column="create_time"  />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"  column="update_time"  />
+    </resultMap>
+
+    <sql id="selectMcSystemConfigVo">
+        select config_id, config_key, config_value, config_name, config_type, remark, create_by, create_time, update_by, update_time
+        from mc_system_config
+    </sql>
+
+    <select id="selectMcSystemConfigList" parameterType="McSystemConfig" resultMap="McSystemConfigResult">
+        <include refid="selectMcSystemConfigVo"/>
+        <where>
+            <if test="configKey != null and configKey != ''">
+                and config_key like concat('%', #{configKey}, '%')
+            </if>
+            <if test="configName != null and configName != ''">
+                and config_name like concat('%', #{configName}, '%')
+            </if>
+        </where>
+        order by config_id
+    </select>
+
+    <select id="selectMcSystemConfigByConfigId" parameterType="Long" resultMap="McSystemConfigResult">
+        <include refid="selectMcSystemConfigVo"/>
+        where config_id = #{configId}
+    </select>
+
+    <select id="selectMcSystemConfigByKey" parameterType="String" resultMap="McSystemConfigResult">
+        <include refid="selectMcSystemConfigVo"/>
+        where config_key = #{configKey}
+    </select>
+
+    <insert id="insertMcSystemConfig" parameterType="McSystemConfig" useGeneratedKeys="true" keyProperty="configId">
+        insert into mc_system_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configKey != null and configKey != ''">config_key,</if>
+            <if test="configValue != null and configValue != ''">config_value,</if>
+            <if test="configName != null and configName != ''">config_name,</if>
+            <if test="configType != null">config_type,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="configKey != null and configKey != ''">#{configKey},</if>
+            <if test="configValue != null and configValue != ''">#{configValue},</if>
+            <if test="configName != null and configName != ''">#{configName},</if>
+            <if test="configType != null">#{configType},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateMcSystemConfig" parameterType="McSystemConfig">
+        update mc_system_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configValue != null and configValue != ''">config_value = #{configValue},</if>
+            <if test="configName != null and configName != ''">config_name = #{configName},</if>
+            <if test="configType != null">config_type = #{configType},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </trim>
+        where config_id = #{configId}
+    </update>
+
+    <delete id="deleteMcSystemConfigByConfigId" parameterType="Long">
+        delete from mc_system_config where config_id = #{configId}
+    </delete>
+
+    <delete id="deleteMcSystemConfigByConfigIds" parameterType="Long">
+        delete from mc_system_config where config_id in
+        <foreach item="configId" collection="array" open="(" separator="," close=")">
+            #{configId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McRechargePackageMapper">
+
+    <resultMap type="com.ruoyi.mc.domain.McRechargePackage" id="McRechargePackageResult">
+        <id     property="packageId"     column="package_id"    />
+        <result property="packageName"   column="package_name"  />
+        <result property="amount"        column="amount"        />
+        <result property="points"        column="points"        />
+        <result property="bonusPoints"   column="bonus_points"  />
+        <result property="sort"          column="sort"          />
+        <result property="status"        column="status"        />
+        <result property="createTime"    column="create_time"   />
+        <result property="updateTime"    column="update_time"   />
+    </resultMap>
+
+    <sql id="selectMcRechargePackageVo">
+        select package_id, package_name, amount, points, bonus_points, sort, status, create_time, update_time
+        from mc_recharge_package
+    </sql>
+
+    <select id="selectMcRechargePackageList" parameterType="com.ruoyi.mc.domain.McRechargePackage" resultMap="McRechargePackageResult">
+        <include refid="selectMcRechargePackageVo"/>
+        <where>
+            <if test="packageName != null and packageName != ''">
+                AND package_name like concat('%', #{packageName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        order by sort asc, package_id asc
+    </select>
+
+    <select id="selectMcRechargePackageByPackageId" parameterType="Long" resultMap="McRechargePackageResult">
+        <include refid="selectMcRechargePackageVo"/>
+        where package_id = #{packageId}
+    </select>
+
+    <select id="selectAvailablePackages" resultMap="McRechargePackageResult">
+        <include refid="selectMcRechargePackageVo"/>
+        where status = '0'
+        order by sort asc, package_id asc
+    </select>
+
+    <insert id="insertMcRechargePackage" parameterType="com.ruoyi.mc.domain.McRechargePackage" useGeneratedKeys="true" keyProperty="packageId">
+        insert into mc_recharge_package
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="packageName != null and packageName != ''">package_name,</if>
+            <if test="amount != null">amount,</if>
+            <if test="points != null">points,</if>
+            <if test="bonusPoints != null">bonus_points,</if>
+            <if test="sort != null">sort,</if>
+            <if test="status != null">status,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="packageName != null and packageName != ''">#{packageName},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="points != null">#{points},</if>
+            <if test="bonusPoints != null">#{bonusPoints},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="status != null">#{status},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateMcRechargePackage" parameterType="com.ruoyi.mc.domain.McRechargePackage">
+        update mc_recharge_package
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="packageName != null and packageName != ''">package_name = #{packageName},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="points != null">points = #{points},</if>
+            <if test="bonusPoints != null">bonus_points = #{bonusPoints},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            update_time = sysdate()
+        </trim>
+        where package_id = #{packageId}
+    </update>
+
+    <delete id="deleteMcRechargePackageByPackageId" parameterType="Long">
+        delete from mc_recharge_package where package_id = #{packageId}
+    </delete>
+
+</mapper>

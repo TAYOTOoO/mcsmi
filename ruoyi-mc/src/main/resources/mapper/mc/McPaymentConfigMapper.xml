@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McPaymentConfigMapper">
+
+    <resultMap type="com.ruoyi.mc.domain.McPaymentConfig" id="McPaymentConfigResult">
+        <result property="configId"    column="config_id"    />
+        <result property="configName"    column="config_name"    />
+        <result property="apiUrl"    column="api_url"    />
+        <result property="merchantId"    column="merchant_id"    />
+        <result property="merchantKey"    column="merchant_key"    />
+        <result property="notifyUrl"    column="notify_url"    />
+        <result property="returnUrl"    column="return_url"    />
+        <result property="status"    column="status"    />
+        <result property="isDefault"    column="is_default"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMcPaymentConfigVo">
+        select config_id, config_name, api_url, merchant_id, merchant_key, notify_url, return_url, status, is_default, remark, create_by, create_time, update_by, update_time from mc_payment_config
+    </sql>
+
+    <select id="selectMcPaymentConfigList" parameterType="com.ruoyi.mc.domain.McPaymentConfig" resultMap="McPaymentConfigResult">
+        <include refid="selectMcPaymentConfigVo"/>
+        <where>
+            <if test="configName != null  and configName != ''"> and config_name like concat('%', #{configName}, '%')</if>
+            <if test="apiUrl != null  and apiUrl != ''"> and api_url = #{apiUrl}</if>
+            <if test="merchantId != null  and merchantId != ''"> and merchant_id = #{merchantId}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="isDefault != null  and isDefault != ''"> and is_default = #{isDefault}</if>
+        </where>
+        order by is_default desc, create_time desc
+    </select>
+
+    <select id="selectMcPaymentConfigByConfigId" parameterType="Long" resultMap="McPaymentConfigResult">
+        <include refid="selectMcPaymentConfigVo"/>
+        where config_id = #{configId}
+    </select>
+
+    <select id="selectDefaultPaymentConfig" resultMap="McPaymentConfigResult">
+        <include refid="selectMcPaymentConfigVo"/>
+        where is_default = '1' and status = '0'
+        limit 1
+    </select>
+
+    <insert id="insertMcPaymentConfig" parameterType="com.ruoyi.mc.domain.McPaymentConfig" useGeneratedKeys="true" keyProperty="configId">
+        insert into mc_payment_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configName != null and configName != ''">config_name,</if>
+            <if test="apiUrl != null and apiUrl != ''">api_url,</if>
+            <if test="merchantId != null and merchantId != ''">merchant_id,</if>
+            <if test="merchantKey != null and merchantKey != ''">merchant_key,</if>
+            <if test="notifyUrl != null">notify_url,</if>
+            <if test="returnUrl != null">return_url,</if>
+            <if test="status != null">status,</if>
+            <if test="isDefault != null">is_default,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="configName != null and configName != ''">#{configName},</if>
+            <if test="apiUrl != null and apiUrl != ''">#{apiUrl},</if>
+            <if test="merchantId != null and merchantId != ''">#{merchantId},</if>
+            <if test="merchantKey != null and merchantKey != ''">#{merchantKey},</if>
+            <if test="notifyUrl != null">#{notifyUrl},</if>
+            <if test="returnUrl != null">#{returnUrl},</if>
+            <if test="status != null">#{status},</if>
+            <if test="isDefault != null">#{isDefault},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMcPaymentConfig" parameterType="com.ruoyi.mc.domain.McPaymentConfig">
+        update mc_payment_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configName != null and configName != ''">config_name = #{configName},</if>
+            <if test="apiUrl != null and apiUrl != ''">api_url = #{apiUrl},</if>
+            <if test="merchantId != null and merchantId != ''">merchant_id = #{merchantId},</if>
+            <if test="merchantKey != null and merchantKey != ''">merchant_key = #{merchantKey},</if>
+            <if test="notifyUrl != null">notify_url = #{notifyUrl},</if>
+            <if test="returnUrl != null">return_url = #{returnUrl},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where config_id = #{configId}
+    </update>
+
+    <update id="cancelAllDefaultConfig">
+        update mc_payment_config set is_default = '0'
+    </update>
+
+    <delete id="deleteMcPaymentConfigByConfigId" parameterType="Long">
+        delete from mc_payment_config where config_id = #{configId}
+    </delete>
+
+    <delete id="deleteMcPaymentConfigByConfigIds" parameterType="Long">
+        delete from mc_payment_config where config_id in
+        <foreach item="configId" collection="array" open="(" separator="," close=")">
+            #{configId}
+        </foreach>
+    </delete>
+
+</mapper>

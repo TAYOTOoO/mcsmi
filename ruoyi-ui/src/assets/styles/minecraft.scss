@@ -1,0 +1,221 @@
+/* Minecraft主题样式 - Vue2版本 */
+
+/* 全局CSS变量 */
+:root {
+  --mc-text-shadow: 2px 2px 0 #1a1a1a;
+  --mc-text-color: #e0e0e0;
+  --mc-border-light: #505050;
+  --mc-border-dark: #2a2a2a;
+  --mc-border-black: #000000;
+}
+
+/* 像素化渲染 */
+.minecraft-page {
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+.minecraft-page * {
+  image-rendering: pixelated;
+}
+
+/* Minecraft方块样式 */
+.mc-box {
+  background-color: rgba(40, 40, 40, 0.85);
+  backdrop-filter: blur(4px);
+  border: 2px solid var(--mc-border-black);
+  box-shadow: inset 2px 2px 0px var(--mc-border-light),
+              inset -2px -2px 0px var(--mc-border-dark);
+  padding: 8px 12px;
+  text-align: center;
+  display: inline-block;
+  color: var(--mc-text-color);
+  text-decoration: none;
+  text-shadow: var(--mc-text-shadow);
+}
+
+.mc-box:hover,
+button.mc-box:hover {
+  background-color: rgba(60, 60, 60, 0.9);
+  box-shadow: inset 2px 2px 0px #666,
+              inset -2px -2px 0px #222;
+  cursor: pointer;
+}
+
+.mc-box.active {
+  background-color: #3a3a3a;
+  box-shadow: inset 2px 2px 0px #222, inset -2px -2px 0px #555;
+  color: #ffffa0;
+  border-color: #000;
+}
+
+/* Minecraft按钮样式 */
+.mc-button {
+  font-family: inherit;
+  color: var(--mc-text-color);
+  text-shadow: var(--mc-text-shadow);
+  background-color: rgba(40, 40, 40, 0.85);
+  border: 2px solid var(--mc-border-black);
+  box-shadow: inset 2px 2px 0px var(--mc-border-light),
+              inset -2px -2px 0px var(--mc-border-dark);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mc-button:hover {
+  background-color: rgba(60, 60, 60, 0.9);
+  transform: translateY(-2px);
+}
+
+.mc-button:active {
+  transform: translateY(0);
+  box-shadow: inset 2px 2px 0px #222, inset -2px -2px 0px #444;
+}
+
+/* Minecraft主要按钮（发光效果） */
+.mc-button-primary {
+  position: relative;
+  background: linear-gradient(to right, #29a9a2, #47d6cd);
+  border: 2px solid #1c2d2c;
+  box-shadow: inset 0 0 0 2px #4fe0d8;
+  color: #fff;
+}
+
+.mc-button-primary::after {
+  content: '✦';
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  font-size: 20px;
+  color: #fff;
+  text-shadow: 0 0 8px #fff;
+  animation: sparkle 2s infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Minecraft输入框样式 */
+.mc-input {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--mc-border-dark);
+  color: var(--mc-text-color);
+  padding: 8px 12px;
+  font-family: inherit;
+  box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+.mc-input:focus {
+  outline: none;
+  border-color: var(--mc-border-light);
+  box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.5),
+              0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* Minecraft卡片样式 */
+.mc-card {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                    url('~@/assets/images/minecraft/new-textures/default_wood.png');
+  background-size: auto, 64px 64px;
+  border: 2px solid var(--mc-border-black);
+  box-shadow: inset 2px 2px 0px var(--mc-border-light),
+              inset -2px -2px 0px var(--mc-border-dark);
+  padding: 20px;
+  image-rendering: pixelated;
+}
+
+/* Minecraft容器样式 */
+.mc-container {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                    url('~@/assets/images/minecraft/new-textures/default_pine_wood.png');
+  background-size: auto, 64px 64px;
+  border: 4px solid var(--mc-border-black);
+  image-rendering: pixelated;
+}
+
+/* 圆石背景 */
+.mc-bg-cobblestone {
+  background-image: url('~@/assets/images/minecraft/new-textures/default_cobble.png');
+  background-repeat: repeat;
+  background-size: 64px 64px;
+  image-rendering: pixelated;
+}
+
+/* 木板背景 */
+.mc-bg-wood {
+  background-image: url('~@/assets/images/minecraft/new-textures/default_pine_wood.png');
+  background-repeat: repeat;
+  background-size: 64px 64px;
+  image-rendering: pixelated;
+}
+
+/* 黑曜石背景 */
+.mc-bg-obsidian {
+  background-image: url('~@/assets/images/minecraft/new-textures/default_obsidian_brick.png');
+  background-repeat: repeat;
+  background-size: 64px 64px;
+  image-rendering: pixelated;
+}
+
+/* Minecraft文本样式 */
+.mc-text {
+  color: var(--mc-text-color);
+  text-shadow: var(--mc-text-shadow);
+  font-family: 'Microsoft YaHei', Arial, sans-serif;
+}
+
+.mc-text-gold {
+  color: #FFD700;
+}
+
+.mc-text-red {
+  color: #FF5555;
+}
+
+.mc-text-green {
+  color: #55FF55;
+}
+
+.mc-text-blue {
+  color: #5555FF;
+}
+
+/* Minecraft加载动画 */
+.mc-loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--mc-border-light);
+  border-top: 3px solid var(--mc-text-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 修复Element UI组件的文字重影问题 */
+.minecraft-page .el-message-box,
+.minecraft-page .el-message,
+.minecraft-page .el-dialog,
+.minecraft-page .el-notification {
+  text-shadow: none !important;
+  color: #333 !important;
+}
+
+.minecraft-page .el-message-box *,
+.minecraft-page .el-message *,
+.minecraft-page .el-dialog *,
+.minecraft-page .el-notification * {
+  text-shadow: none !important;
+}
+
+.minecraft-page .el-message-box__title,
+.minecraft-page .el-message-box__content {
+  color: #333 !important;
+}

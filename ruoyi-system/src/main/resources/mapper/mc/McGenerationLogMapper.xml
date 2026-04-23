@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McGenerationLogMapper">
+
+    <resultMap type="McGenerationLog" id="McGenerationLogResult">
+        <result property="logId"              column="log_id"              />
+        <result property="taskId"             column="task_id"             />
+        <result property="userId"             column="user_id"             />
+        <result property="username"           column="username"            />
+        <result property="styleDescription"   column="style_description"   />
+        <result property="optimizedPrompt"    column="optimized_prompt"    />
+        <result property="generatedImageUrl"  column="generated_image_url" />
+        <result property="textModelId"        column="text_model_id"       />
+        <result property="imageModelId"       column="image_model_id"      />
+        <result property="textModelName"      column="text_model_name"     />
+        <result property="imageModelName"     column="image_model_name"    />
+        <result property="generationTime"     column="generation_time"     />
+        <result property="status"             column="status"              />
+        <result property="errorMessage"       column="error_message"       />
+        <result property="createTime"         column="create_time"         />
+    </resultMap>
+
+    <sql id="selectMcGenerationLogVo">
+        select log_id, task_id, user_id, username, style_description, optimized_prompt, generated_image_url, text_model_id, image_model_id, text_model_name, image_model_name, generation_time, status, error_message, create_time from mc_generation_log
+    </sql>
+
+    <select id="selectMcGenerationLogList" parameterType="McGenerationLog" resultMap="McGenerationLogResult">
+        <include refid="selectMcGenerationLogVo"/>
+        <where>
+            <if test="taskId != null">and task_id = #{taskId}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="username != null and username != ''">and username like concat('%', #{username}, '%')</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMcGenerationLogByLogId" parameterType="Long" resultMap="McGenerationLogResult">
+        <include refid="selectMcGenerationLogVo"/>
+        where log_id = #{logId}
+    </select>
+
+    <insert id="insertMcGenerationLog" parameterType="McGenerationLog" useGeneratedKeys="true" keyProperty="logId">
+        insert into mc_generation_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="username != null">username,</if>
+            <if test="styleDescription != null">style_description,</if>
+            <if test="optimizedPrompt != null">optimized_prompt,</if>
+            <if test="generatedImageUrl != null">generated_image_url,</if>
+            <if test="textModelId != null">text_model_id,</if>
+            <if test="imageModelId != null">image_model_id,</if>
+            <if test="textModelName != null">text_model_name,</if>
+            <if test="imageModelName != null">image_model_name,</if>
+            <if test="generationTime != null">generation_time,</if>
+            <if test="status != null">status,</if>
+            <if test="errorMessage != null">error_message,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="username != null">#{username},</if>
+            <if test="styleDescription != null">#{styleDescription},</if>
+            <if test="optimizedPrompt != null">#{optimizedPrompt},</if>
+            <if test="generatedImageUrl != null">#{generatedImageUrl},</if>
+            <if test="textModelId != null">#{textModelId},</if>
+            <if test="imageModelId != null">#{imageModelId},</if>
+            <if test="textModelName != null">#{textModelName},</if>
+            <if test="imageModelName != null">#{imageModelName},</if>
+            <if test="generationTime != null">#{generationTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="errorMessage != null">#{errorMessage},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMcGenerationLog" parameterType="McGenerationLog">
+        update mc_generation_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="styleDescription != null">style_description = #{styleDescription},</if>
+            <if test="optimizedPrompt != null">optimized_prompt = #{optimizedPrompt},</if>
+            <if test="generatedImageUrl != null">generated_image_url = #{generatedImageUrl},</if>
+            <if test="textModelId != null">text_model_id = #{textModelId},</if>
+            <if test="imageModelId != null">image_model_id = #{imageModelId},</if>
+            <if test="textModelName != null">text_model_name = #{textModelName},</if>
+            <if test="imageModelName != null">image_model_name = #{imageModelName},</if>
+            <if test="generationTime != null">generation_time = #{generationTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="errorMessage != null">error_message = #{errorMessage},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where log_id = #{logId}
+    </update>
+
+    <delete id="deleteMcGenerationLogByLogId" parameterType="Long">
+        delete from mc_generation_log where log_id = #{logId}
+    </delete>
+
+    <delete id="deleteMcGenerationLogByLogIds" parameterType="String">
+        delete from mc_generation_log where log_id in
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+
+    <select id="countTotalCalls" resultType="Integer">
+        select count(*) from mc_generation_log
+    </select>
+
+    <select id="countSuccessCalls" resultType="Integer">
+        select count(*) from mc_generation_log where status = '1'
+    </select>
+
+    <select id="avgGenerationTime" resultType="Double">
+        select avg(generation_time) from mc_generation_log where status = '1'
+    </select>
+</mapper>

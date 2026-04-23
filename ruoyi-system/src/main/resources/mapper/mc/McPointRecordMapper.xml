@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McPointRecordMapper">
+
+    <resultMap type="McPointRecord" id="McPointRecordResult">
+        <result property="recordId"        column="record_id"        />
+        <result property="userId"          column="user_id"          />
+        <result property="userName"        column="user_name"        />
+        <result property="changeType"      column="change_type"      />
+        <result property="changePoints"    column="change_points"    />
+        <result property="beforePoints"    column="before_points"    />
+        <result property="afterPoints"     column="after_points"     />
+        <result property="taskId"          column="task_id"          />
+        <result property="taskNo"          column="task_no"          />
+        <result property="remark"          column="remark"           />
+        <result property="createTime"      column="create_time"      />
+    </resultMap>
+
+    <sql id="selectMcPointRecordVo">
+        select record_id, user_id, user_name, change_type, change_points,
+               before_points, after_points, task_id, task_no, remark, create_time
+        from mc_point_record
+    </sql>
+
+    <select id="selectMcPointRecordList" parameterType="McPointRecord" resultMap="McPointRecordResult">
+        <include refid="selectMcPointRecordVo"/>
+        <where>
+            <if test="userId != null"> and user_id = #{userId}</if>
+            <if test="changeType != null"> and change_type = #{changeType}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMcPointRecordByRecordId" parameterType="Long" resultMap="McPointRecordResult">
+        <include refid="selectMcPointRecordVo"/>
+        where record_id = #{recordId}
+    </select>
+
+    <insert id="insertMcPointRecord" parameterType="McPointRecord" useGeneratedKeys="true" keyProperty="recordId">
+        insert into mc_point_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="changeType != null">change_type,</if>
+            <if test="changePoints != null">change_points,</if>
+            <if test="beforePoints != null">before_points,</if>
+            <if test="afterPoints != null">after_points,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="taskNo != null">task_no,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="changeType != null">#{changeType},</if>
+            <if test="changePoints != null">#{changePoints},</if>
+            <if test="beforePoints != null">#{beforePoints},</if>
+            <if test="afterPoints != null">#{afterPoints},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="taskNo != null">#{taskNo},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMcPointRecord" parameterType="McPointRecord">
+        update mc_point_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="changeType != null">change_type = #{changeType},</if>
+            <if test="changePoints != null">change_points = #{changePoints},</if>
+            <if test="beforePoints != null">before_points = #{beforePoints},</if>
+            <if test="afterPoints != null">after_points = #{afterPoints},</if>
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="taskNo != null">task_no = #{taskNo},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+    <delete id="deleteMcPointRecordByRecordId" parameterType="Long">
+        delete from mc_point_record where record_id = #{recordId}
+    </delete>
+
+    <delete id="deleteMcPointRecordByRecordIds" parameterType="Long">
+        delete from mc_point_record where record_id in
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+
+</mapper>

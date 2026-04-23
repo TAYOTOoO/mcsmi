@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McPromptTemplateMapper">
+
+    <resultMap type="McPromptTemplate" id="McPromptTemplateResult">
+        <result property="templateId"       column="template_id"       />
+        <result property="templateName"     column="template_name"     />
+        <result property="templateContent"  column="template_content"  />
+        <result property="isActive"         column="is_active"         />
+        <result property="templateType"     column="template_type"     />
+        <result property="description"      column="description"       />
+        <result property="status"           column="status"            />
+        <result property="textModelId"      column="text_model_id"     />
+        <result property="imageModelId"     column="image_model_id"    />
+        <result property="materialType"     column="material_type"     />
+        <result property="referenceImageUrl" column="reference_image_url" />
+        <result property="createBy"         column="create_by"         />
+        <result property="createTime"       column="create_time"       />
+        <result property="updateBy"         column="update_by"         />
+        <result property="updateTime"       column="update_time"       />
+        <result property="remark"           column="remark"            />
+    </resultMap>
+
+    <sql id="selectMcPromptTemplateVo">
+        select template_id, template_name, template_content, is_active, template_type, description, status, text_model_id, image_model_id, material_type, reference_image_url, create_by, create_time, update_by, update_time, remark from mc_prompt_template
+    </sql>
+
+    <select id="selectMcPromptTemplateList" parameterType="McPromptTemplate" resultMap="McPromptTemplateResult">
+        <include refid="selectMcPromptTemplateVo"/>
+        <where>
+            <if test="templateName != null  and templateName != ''"> and template_name like concat('%', #{templateName}, '%')</if>
+            <if test="isActive != null  and isActive != ''"> and is_active = #{isActive}</if>
+            <if test="templateType != null  and templateType != ''"> and template_type = #{templateType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="materialType != null"> and material_type = #{materialType}</if>
+        </where>
+        order by is_active desc, create_time desc
+    </select>
+
+    <select id="selectMcPromptTemplateByTemplateId" parameterType="Long" resultMap="McPromptTemplateResult">
+        <include refid="selectMcPromptTemplateVo"/>
+        where template_id = #{templateId}
+    </select>
+
+    <select id="getActiveTemplate" resultMap="McPromptTemplateResult">
+        <include refid="selectMcPromptTemplateVo"/>
+        where is_active = '1' and status = '0'
+        order by template_id desc
+        limit 1
+    </select>
+
+    <select id="getActiveTemplates" resultMap="McPromptTemplateResult">
+        <include refid="selectMcPromptTemplateVo"/>
+        where is_active = '1' and status = '0'
+        order by template_id asc
+    </select>
+
+    <insert id="insertMcPromptTemplate" parameterType="McPromptTemplate" useGeneratedKeys="true" keyProperty="templateId">
+        insert into mc_prompt_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templateName != null and templateName != ''">template_name,</if>
+            <if test="templateContent != null and templateContent != ''">template_content,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="templateType != null">template_type,</if>
+            <if test="description != null">description,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="textModelId != null">text_model_id,</if>
+            <if test="imageModelId != null">image_model_id,</if>
+            <if test="materialType != null">material_type,</if>
+            <if test="referenceImageUrl != null">reference_image_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templateName != null and templateName != ''">#{templateName},</if>
+            <if test="templateContent != null and templateContent != ''">#{templateContent},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="templateType != null">#{templateType},</if>
+            <if test="description != null">#{description},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="textModelId != null">#{textModelId},</if>
+            <if test="imageModelId != null">#{imageModelId},</if>
+            <if test="materialType != null">#{materialType},</if>
+            <if test="referenceImageUrl != null">#{referenceImageUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMcPromptTemplate" parameterType="McPromptTemplate">
+        update mc_prompt_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="templateName != null and templateName != ''">template_name = #{templateName},</if>
+            <if test="templateContent != null and templateContent != ''">template_content = #{templateContent},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="templateType != null">template_type = #{templateType},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="textModelId != null">text_model_id = #{textModelId},</if>
+            <if test="imageModelId != null">image_model_id = #{imageModelId},</if>
+            <if test="materialType != null">material_type = #{materialType},</if>
+            <if test="referenceImageUrl != null">reference_image_url = #{referenceImageUrl},</if>
+        </trim>
+        where template_id = #{templateId}
+    </update>
+
+    <delete id="deleteMcPromptTemplateByTemplateId" parameterType="Long">
+        delete from mc_prompt_template where template_id = #{templateId}
+    </delete>
+
+    <delete id="deleteMcPromptTemplateByTemplateIds" parameterType="String">
+        delete from mc_prompt_template where template_id in
+        <foreach item="templateId" collection="array" open="(" separator="," close=")">
+            #{templateId}
+        </foreach>
+    </delete>
+
+</mapper>

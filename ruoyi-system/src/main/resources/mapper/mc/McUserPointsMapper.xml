@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McUserPointsMapper">
+
+    <resultMap type="McUserPoints" id="McUserPointsResult">
+        <result property="pointId"          column="point_id"          />
+        <result property="userId"           column="user_id"           />
+        <result property="userName"         column="user_name"         />
+        <result property="totalPoints"      column="total_points"      />
+        <result property="usedPoints"       column="used_points"       />
+        <result property="remainingPoints"  column="remaining_points"  />
+        <result property="createTime"       column="create_time"       />
+        <result property="updateTime"       column="update_time"       />
+    </resultMap>
+
+    <sql id="selectMcUserPointsVo">
+        select point_id, user_id, user_name, total_points, used_points, remaining_points, create_time, update_time from mc_user_points
+    </sql>
+
+    <select id="selectMcUserPointsList" parameterType="McUserPoints" resultMap="McUserPointsResult">
+        <include refid="selectMcUserPointsVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectMcUserPointsByPointId" parameterType="Long" resultMap="McUserPointsResult">
+        <include refid="selectMcUserPointsVo"/>
+        where point_id = #{pointId}
+    </select>
+
+    <select id="selectMcUserPointsByUserId" parameterType="Long" resultMap="McUserPointsResult">
+        <include refid="selectMcUserPointsVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertMcUserPoints" parameterType="McUserPoints" useGeneratedKeys="true" keyProperty="pointId">
+        insert into mc_user_points
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="totalPoints != null">total_points,</if>
+            <if test="usedPoints != null">used_points,</if>
+            <if test="remainingPoints != null">remaining_points,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="totalPoints != null">#{totalPoints},</if>
+            <if test="usedPoints != null">#{usedPoints},</if>
+            <if test="remainingPoints != null">#{remainingPoints},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMcUserPoints" parameterType="McUserPoints">
+        update mc_user_points
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="totalPoints != null">total_points = #{totalPoints},</if>
+            <if test="usedPoints != null">used_points = #{usedPoints},</if>
+            <if test="remainingPoints != null">remaining_points = #{remainingPoints},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where point_id = #{pointId}
+    </update>
+
+    <update id="deductPoints">
+        update mc_user_points
+        set used_points = used_points + #{points},
+            remaining_points = remaining_points - #{points},
+            update_time = sysdate()
+        where user_id = #{userId} and remaining_points >= #{points}
+    </update>
+
+    <update id="addPoints">
+        update mc_user_points
+        set total_points = total_points + #{points},
+            remaining_points = remaining_points + #{points},
+            update_time = sysdate()
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteMcUserPointsByPointId" parameterType="Long">
+        delete from mc_user_points where point_id = #{pointId}
+    </delete>
+
+    <delete id="deleteMcUserPointsByPointIds" parameterType="String">
+        delete from mc_user_points where point_id in
+        <foreach item="pointId" collection="array" open="(" separator="," close=")">
+            #{pointId}
+        </foreach>
+    </delete>
+</mapper>

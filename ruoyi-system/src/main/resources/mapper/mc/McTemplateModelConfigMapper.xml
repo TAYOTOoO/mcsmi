@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McTemplateModelConfigMapper">
+    
+    <resultMap type="McTemplateModelConfig" id="McTemplateModelConfigResult">
+        <result property="configId"    column="config_id"    />
+        <result property="templateId"    column="template_id"    />
+        <result property="modelId"    column="model_id"    />
+        <result property="modelType"    column="model_type"    />
+        <result property="priority"    column="priority"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="modelName"    column="model_name"    />
+        <result property="templateName"    column="template_name"    />
+    </resultMap>
+
+    <sql id="selectMcTemplateModelConfigVo">
+        select c.config_id, c.template_id, c.model_id, c.model_type, c.priority, c.status, 
+               c.create_by, c.create_time, c.update_by, c.update_time, c.remark,
+               m.model_name, t.template_name
+        from mc_template_model_config c
+        left join mc_ai_model m on c.model_id = m.model_id
+        left join mc_prompt_template t on c.template_id = t.template_id
+    </sql>
+
+    <select id="selectMcTemplateModelConfigList" parameterType="McTemplateModelConfig" resultMap="McTemplateModelConfigResult">
+        <include refid="selectMcTemplateModelConfigVo"/>
+        <where>  
+            <if test="templateId != null "> and c.template_id = #{templateId}</if>
+            <if test="modelId != null "> and c.model_id = #{modelId}</if>
+            <if test="modelType != null "> and c.model_type = #{modelType}</if>
+            <if test="status != null  and status != ''"> and c.status = #{status}</if>
+        </where>
+        order by c.template_id, c.model_type, c.priority
+    </select>
+    
+    <select id="selectMcTemplateModelConfigByConfigId" parameterType="Long" resultMap="McTemplateModelConfigResult">
+        <include refid="selectMcTemplateModelConfigVo"/>
+        where c.config_id = #{configId}
+    </select>
+
+    <!-- 核心方法：查询模板的启用模型列表（按优先级排序） -->
+    <select id="selectEnabledModelsByTemplateAndType" resultMap="McTemplateModelConfigResult">
+        select c.config_id, c.template_id, c.model_id, c.model_type, c.priority, c.status,
+               m.model_name, m.api_url, m.api_key, m.model_params
+        from mc_template_model_config c
+        inner join mc_ai_model m on c.model_id = m.model_id
+        where c.template_id = #{templateId}
+          and c.model_type = #{modelType}
+          and c.status = '0'
+          and m.status = '0'
+          and m.is_active = '1'
+        order by c.priority asc
+    </select>
+
+    <insert id="insertMcTemplateModelConfig" parameterType="McTemplateModelConfig" useGeneratedKeys="true" keyProperty="configId">
+        insert into mc_template_model_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">template_id,</if>
+            <if test="modelId != null">model_id,</if>
+            <if test="modelType != null">model_type,</if>
+            <if test="priority != null">priority,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">#{templateId},</if>
+            <if test="modelId != null">#{modelId},</if>
+            <if test="modelType != null">#{modelType},</if>
+            <if test="priority != null">#{priority},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMcTemplateModelConfig" parameterType="McTemplateModelConfig">
+        update mc_template_model_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="templateId != null">template_id = #{templateId},</if>
+            <if test="modelId != null">model_id = #{modelId},</if>
+            <if test="modelType != null">model_type = #{modelType},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where config_id = #{configId}
+    </update>
+
+    <delete id="deleteMcTemplateModelConfigByConfigId" parameterType="Long">
+        delete from mc_template_model_config where config_id = #{configId}
+    </delete>
+
+    <delete id="deleteMcTemplateModelConfigByConfigIds" parameterType="String">
+        delete from mc_template_model_config where config_id in 
+        <foreach item="configId" collection="array" open="(" separator="," close=")">
+            #{configId}
+        </foreach>
+    </delete>
+
+</mapper>

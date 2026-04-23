@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McRechargeOrderMapper">
+
+    <resultMap type="com.ruoyi.mc.domain.McRechargeOrder" id="McRechargeOrderResult">
+        <id     property="orderId"       column="order_id"      />
+        <result property="orderNo"       column="order_no"      />
+        <result property="userId"        column="user_id"       />
+        <result property="packageId"     column="package_id"    />
+        <result property="amount"        column="amount"        />
+        <result property="points"        column="points"        />
+        <result property="paymentType"   column="payment_type"  />
+        <result property="tradeNo"       column="trade_no"      />
+        <result property="orderStatus"   column="order_status"  />
+        <result property="notifyStatus"  column="notify_status" />
+        <result property="payTime"       column="pay_time"      />
+        <result property="expireTime"    column="expire_time"   />
+        <result property="callbackData"  column="callback_data" />
+        <result property="remark"        column="remark"        />
+        <result property="createTime"    column="create_time"   />
+        <result property="updateTime"    column="update_time"   />
+    </resultMap>
+
+    <sql id="selectMcRechargeOrderVo">
+        select order_id, order_no, user_id, package_id, amount, points, payment_type,
+               trade_no, order_status, notify_status, pay_time, expire_time,
+               callback_data, remark, create_time, update_time
+        from mc_recharge_order
+    </sql>
+
+    <select id="selectMcRechargeOrderList" parameterType="com.ruoyi.mc.domain.McRechargeOrder" resultMap="McRechargeOrderResult">
+        <include refid="selectMcRechargeOrderVo"/>
+        <where>
+            <if test="orderNo != null and orderNo != ''">
+                AND order_no = #{orderNo}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="orderStatus != null">
+                AND order_status = #{orderStatus}
+            </if>
+            <if test="paymentType != null and paymentType != ''">
+                AND payment_type = #{paymentType}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMcRechargeOrderByOrderId" parameterType="Long" resultMap="McRechargeOrderResult">
+        <include refid="selectMcRechargeOrderVo"/>
+        where order_id = #{orderId}
+    </select>
+
+    <select id="selectMcRechargeOrderByOrderNo" parameterType="String" resultMap="McRechargeOrderResult">
+        <include refid="selectMcRechargeOrderVo"/>
+        where order_no = #{orderNo}
+    </select>
+
+    <insert id="insertMcRechargeOrder" parameterType="com.ruoyi.mc.domain.McRechargeOrder" useGeneratedKeys="true" keyProperty="orderId">
+        insert into mc_recharge_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null and orderNo != ''">order_no,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="packageId != null">package_id,</if>
+            <if test="amount != null">amount,</if>
+            <if test="points != null">points,</if>
+            <if test="paymentType != null and paymentType != ''">payment_type,</if>
+            <if test="tradeNo != null and tradeNo != ''">trade_no,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="notifyStatus != null">notify_status,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="expireTime != null">expire_time,</if>
+            <if test="callbackData != null">callback_data,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="packageId != null">#{packageId},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="points != null">#{points},</if>
+            <if test="paymentType != null and paymentType != ''">#{paymentType},</if>
+            <if test="tradeNo != null and tradeNo != ''">#{tradeNo},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="notifyStatus != null">#{notifyStatus},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="expireTime != null">#{expireTime},</if>
+            <if test="callbackData != null">#{callbackData},</if>
+            <if test="remark != null">#{remark},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateMcRechargeOrder" parameterType="com.ruoyi.mc.domain.McRechargeOrder">
+        update mc_recharge_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tradeNo != null and tradeNo != ''">trade_no = #{tradeNo},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="notifyStatus != null">notify_status = #{notifyStatus},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="callbackData != null">callback_data = #{callbackData},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deleteMcRechargeOrderByOrderId" parameterType="Long">
+        delete from mc_recharge_order where order_id = #{orderId}
+    </delete>
+
+</mapper>

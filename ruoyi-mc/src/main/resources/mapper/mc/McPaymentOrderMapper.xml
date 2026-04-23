@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McPaymentOrderMapper">
+
+    <resultMap type="com.ruoyi.mc.domain.McPaymentOrder" id="McPaymentOrderResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="outTradeNo"    column="out_trade_no"    />
+        <result property="tradeNo"    column="trade_no"    />
+        <result property="userId"    column="user_id"    />
+        <result property="username"    column="username"    />
+        <result property="orderType"    column="order_type"    />
+        <result property="packageId"    column="package_id"    />
+        <result property="durationMonths"    column="duration_months"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="expireTime"    column="expire_time"    />
+        <result property="productName"    column="product_name"    />
+        <result property="amount"    column="amount"    />
+        <result property="points"    column="points"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="status"    column="status"    />
+        <result property="notifyStatus"    column="notify_status"    />
+        <result property="payTime"    column="pay_time"    />
+        <result property="notifyTime"    column="notify_time"    />
+        <result property="configId"    column="config_id"    />
+        <result property="param"    column="param"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMcPaymentOrderVo">
+        select order_id, out_trade_no, trade_no, user_id, username, order_type, package_id, duration_months, start_time, expire_time, product_name, amount, points, payment_type, status, notify_status, pay_time, notify_time, config_id, param, remark, create_time, update_time from mc_payment_order
+    </sql>
+
+    <select id="selectMcPaymentOrderList" parameterType="com.ruoyi.mc.domain.McPaymentOrder" resultMap="McPaymentOrderResult">
+        <include refid="selectMcPaymentOrderVo"/>
+        <where>
+            <if test="outTradeNo != null  and outTradeNo != ''"> and out_trade_no = #{outTradeNo}</if>
+            <if test="tradeNo != null  and tradeNo != ''"> and trade_no = #{tradeNo}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="orderType != null  and orderType != ''"> and order_type = #{orderType}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="paymentType != null  and paymentType != ''"> and payment_type = #{paymentType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="notifyStatus != null  and notifyStatus != ''"> and notify_status = #{notifyStatus}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMcPaymentOrderByOrderId" parameterType="Long" resultMap="McPaymentOrderResult">
+        <include refid="selectMcPaymentOrderVo"/>
+        where order_id = #{orderId}
+    </select>
+
+    <select id="selectMcPaymentOrderByOutTradeNo" parameterType="String" resultMap="McPaymentOrderResult">
+        <include refid="selectMcPaymentOrderVo"/>
+        where out_trade_no = #{outTradeNo}
+    </select>
+
+    <insert id="insertMcPaymentOrder" parameterType="com.ruoyi.mc.domain.McPaymentOrder" useGeneratedKeys="true" keyProperty="orderId">
+        insert into mc_payment_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="outTradeNo != null and outTradeNo != ''">out_trade_no,</if>
+            <if test="tradeNo != null">trade_no,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="username != null">username,</if>
+            <if test="orderType != null">order_type,</if>
+            <if test="packageId != null">package_id,</if>
+            <if test="durationMonths != null">duration_months,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="expireTime != null">expire_time,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+            <if test="amount != null">amount,</if>
+            <if test="points != null">points,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="status != null">status,</if>
+            <if test="notifyStatus != null">notify_status,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="notifyTime != null">notify_time,</if>
+            <if test="configId != null">config_id,</if>
+            <if test="param != null">param,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="outTradeNo != null and outTradeNo != ''">#{outTradeNo},</if>
+            <if test="tradeNo != null">#{tradeNo},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="username != null">#{username},</if>
+            <if test="orderType != null">#{orderType},</if>
+            <if test="packageId != null">#{packageId},</if>
+            <if test="durationMonths != null">#{durationMonths},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="expireTime != null">#{expireTime},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="points != null">#{points},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="notifyStatus != null">#{notifyStatus},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="notifyTime != null">#{notifyTime},</if>
+            <if test="configId != null">#{configId},</if>
+            <if test="param != null">#{param},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMcPaymentOrder" parameterType="com.ruoyi.mc.domain.McPaymentOrder">
+        update mc_payment_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tradeNo != null">trade_no = #{tradeNo},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="orderType != null">order_type = #{orderType},</if>
+            <if test="packageId != null">package_id = #{packageId},</if>
+            <if test="durationMonths != null">duration_months = #{durationMonths},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="expireTime != null">expire_time = #{expireTime},</if>
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="points != null">points = #{points},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="notifyStatus != null">notify_status = #{notifyStatus},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="notifyTime != null">notify_time = #{notifyTime},</if>
+            <if test="configId != null">config_id = #{configId},</if>
+            <if test="param != null">param = #{param},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deleteMcPaymentOrderByOrderId" parameterType="Long">
+        delete from mc_payment_order where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteMcPaymentOrderByOrderIds" parameterType="Long">
+        delete from mc_payment_order where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+    <!-- 联合查询：支付订单 + 订阅订单 -->
+    <select id="selectAllOrdersList" parameterType="com.ruoyi.mc.domain.McPaymentOrder" resultMap="McPaymentOrderResult">
+        select * from (
+            select order_id, out_trade_no, trade_no, user_id, username,
+                   IFNULL(order_type, 'recharge') as order_type,
+                   package_id, duration_months, start_time, expire_time,
+                   product_name, amount, points, payment_type, status,
+                   notify_status, pay_time, notify_time, config_id, param, remark,
+                   create_time, update_time
+            from mc_payment_order
+
+            UNION ALL
+
+            select (s.order_id + 10000000) as order_id,
+                   s.order_no as out_trade_no,
+                   s.trade_no,
+                   s.user_id,
+                   u.user_name as username,
+                   'subscription' as order_type,
+                   s.package_id,
+                   s.duration_months,
+                   s.start_time,
+                   s.expire_time,
+                   s.package_name as product_name,
+                   s.actual_amount as amount,
+                   NULL as points,
+                   s.payment_method as payment_type,
+                   CAST(s.payment_status AS CHAR) as status,
+                   NULL as notify_status,
+                   s.payment_time as pay_time,
+                   NULL as notify_time,
+                   NULL as config_id,
+                   NULL as param,
+                   s.remark,
+                   s.create_time,
+                   s.update_time
+            from mc_subscription_order s
+            left join sys_user u on s.user_id = u.user_id
+        ) t
+        <where>
+            <if test="outTradeNo != null and outTradeNo != ''"> and t.out_trade_no = #{outTradeNo}</if>
+            <if test="tradeNo != null and tradeNo != ''"> and t.trade_no = #{tradeNo}</if>
+            <if test="userId != null"> and t.user_id = #{userId}</if>
+            <if test="username != null and username != ''"> and t.username like concat('%', #{username}, '%')</if>
+            <if test="orderType != null and orderType != ''"> and t.order_type = #{orderType}</if>
+            <if test="productName != null and productName != ''"> and t.product_name like concat('%', #{productName}, '%')</if>
+            <if test="paymentType != null and paymentType != ''"> and t.payment_type = #{paymentType}</if>
+            <if test="status != null and status != ''"> and t.status = #{status}</if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                AND date_format(t.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                AND date_format(t.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+        order by t.create_time desc
+    </select>
+
+</mapper>

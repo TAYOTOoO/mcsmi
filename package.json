@@ -1,0 +1,13 @@
+{
+  "name": "mc-merged-frontend",
+  "version": "1.0.0",
+  "description": "Merged frontend for MC Texture Workshop",
+  "scripts": {
+    "start": "node server.js",
+    "install-deps": "npm install express http-proxy-middleware"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6"
+  }
+}

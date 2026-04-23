@@ -1,0 +1,36 @@
+# ================================
+# 开发/测试环境配置
+# 使用方式: --spring.profiles.active=dev
+# ================================
+
+# MC材质包配置 - 开发/测试环境
+mc:
+  # 临时文件路径（生成的图片等）
+  temp:
+    path: D:/mc/temp
+  # 材质文件路径
+  textures:
+    path: D:/mc/textures
+  # 输出文件路径（材质包zip）
+  output:
+    path: D:/mc/output
+
+# 文件上传路径 - 开发/测试环境
+ruoyi:
+  profile: D:/mc
+
+# 数据库配置 - 开发/测试环境（内网测试库）
+spring:
+  datasource:
+    druid:
+      master:
+        url: jdbc:mysql://yourip:3306/mc?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: yourpassword
+  # Redis配置 - 开发/测试环境
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+

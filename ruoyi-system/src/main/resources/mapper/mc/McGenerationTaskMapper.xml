@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McGenerationTaskMapper">
+
+    <resultMap type="McGenerationTask" id="McGenerationTaskResult">
+        <result property="taskId"              column="task_id"              />
+        <result property="taskNo"              column="task_no"              />
+        <result property="userId"              column="user_id"              />
+        <result property="userName"            column="user_name"            />
+        <result property="versionId"           column="version_id"           />
+        <result property="versionName"         column="version_name"         />
+        <result property="templateId"          column="template_id"          />
+        <result property="styleDescription"    column="style_description"    />
+        <result property="generationType"      column="generation_type"      />
+        <result property="materialType"        column="material_type"        />
+        <result property="prePrompt"           column="pre_prompt"           />
+        <result property="optimizedPrompt"     column="optimized_prompt"     />
+        <result property="finalPrompt"         column="final_prompt"         />
+        <result property="textModelId"         column="text_model_id"        />
+        <result property="textModelUrl"        column="text_model_url"       />
+        <result property="imageModelId"        column="image_model_id"       />
+        <result property="imageModelUrl"       column="image_model_url"      />
+        <result property="imageUrl"            column="image_url"            />
+        <result property="generatedImageUrl"   column="image_url"            />
+        <result property="taskStatus"          column="task_status"          />
+        <result property="totalTextures"       column="total_textures"       />
+        <result property="completedTextures"   column="completed_textures"   />
+        <result property="costPoints"          column="cost_points"          />
+        <result property="errorMsg"            column="error_msg"            />
+        <result property="createTime"          column="create_time"          />
+        <result property="startTime"           column="start_time"           />
+        <result property="completeTime"        column="complete_time"        />
+    </resultMap>
+
+    <sql id="selectMcGenerationTaskVo">
+        select task_id, task_no, user_id, user_name, version_id, version_name, template_id,
+               style_description, generation_type, material_type, pre_prompt, optimized_prompt, final_prompt,
+               text_model_id, text_model_url, image_model_id, image_model_url,
+               image_url, task_status, total_textures, completed_textures,
+               cost_points, error_msg, create_time, start_time, complete_time
+        from mc_generation_task
+    </sql>
+
+    <select id="selectMcGenerationTaskList" parameterType="McGenerationTask" resultMap="McGenerationTaskResult">
+        <include refid="selectMcGenerationTaskVo"/>
+        <where>
+            <if test="taskNo != null and taskNo != ''"> and task_no like concat('%', #{taskNo}, '%')</if>
+            <if test="userId != null"> and user_id = #{userId}</if>
+            <if test="userName != null and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="styleDescription != null and styleDescription != ''"> and style_description like concat('%', #{styleDescription}, '%')</if>
+            <if test="taskStatus != null"> and task_status = #{taskStatus}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMcGenerationTaskByTaskId" parameterType="Long" resultMap="McGenerationTaskResult">
+        <include refid="selectMcGenerationTaskVo"/>
+        where task_id = #{taskId}
+    </select>
+
+    <insert id="insertMcGenerationTask" parameterType="McGenerationTask" useGeneratedKeys="true" keyProperty="taskId">
+        insert into mc_generation_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskNo != null and taskNo != ''">task_no,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="versionId != null">version_id,</if>
+            <if test="versionName != null">version_name,</if>
+            <if test="templateId != null">template_id,</if>
+            <if test="styleDescription != null">style_description,</if>
+            <if test="generationType != null">generation_type,</if>
+            <if test="materialType != null">material_type,</if>
+            <if test="prePrompt != null">pre_prompt,</if>
+            <if test="optimizedPrompt != null">optimized_prompt,</if>
+            <if test="finalPrompt != null">final_prompt,</if>
+            <if test="textModelId != null">text_model_id,</if>
+            <if test="textModelUrl != null">text_model_url,</if>
+            <if test="imageModelId != null">image_model_id,</if>
+            <if test="imageModelUrl != null">image_model_url,</if>
+            <if test="imageUrl != null">image_url,</if>
+            <if test="taskStatus != null">task_status,</if>
+            <if test="totalTextures != null">total_textures,</if>
+            <if test="completedTextures != null">completed_textures,</if>
+            <if test="costPoints != null">cost_points,</if>
+            <if test="errorMsg != null">error_msg,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="completeTime != null">complete_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskNo != null and taskNo != ''">#{taskNo},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="versionId != null">#{versionId},</if>
+            <if test="versionName != null">#{versionName},</if>
+            <if test="templateId != null">#{templateId},</if>
+            <if test="styleDescription != null">#{styleDescription},</if>
+            <if test="generationType != null">#{generationType},</if>
+            <if test="materialType != null">#{materialType},</if>
+            <if test="prePrompt != null">#{prePrompt},</if>
+            <if test="optimizedPrompt != null">#{optimizedPrompt},</if>
+            <if test="finalPrompt != null">#{finalPrompt},</if>
+            <if test="textModelId != null">#{textModelId},</if>
+            <if test="textModelUrl != null">#{textModelUrl},</if>
+            <if test="imageModelId != null">#{imageModelId},</if>
+            <if test="imageModelUrl != null">#{imageModelUrl},</if>
+            <if test="imageUrl != null">#{imageUrl},</if>
+            <if test="taskStatus != null">#{taskStatus},</if>
+            <if test="totalTextures != null">#{totalTextures},</if>
+            <if test="completedTextures != null">#{completedTextures},</if>
+            <if test="costPoints != null">#{costPoints},</if>
+            <if test="errorMsg != null">#{errorMsg},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="completeTime != null">#{completeTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMcGenerationTask" parameterType="McGenerationTask">
+        update mc_generation_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskNo != null and taskNo != ''">task_no = #{taskNo},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="versionId != null">version_id = #{versionId},</if>
+            <if test="versionName != null">version_name = #{versionName},</if>
+            <if test="templateId != null">template_id = #{templateId},</if>
+            <if test="styleDescription != null">style_description = #{styleDescription},</if>
+            <if test="generationType != null">generation_type = #{generationType},</if>
+            <if test="materialType != null">material_type = #{materialType},</if>
+            <if test="prePrompt != null">pre_prompt = #{prePrompt},</if>
+            <if test="optimizedPrompt != null">optimized_prompt = #{optimizedPrompt},</if>
+            <if test="finalPrompt != null">final_prompt = #{finalPrompt},</if>
+            <if test="textModelId != null">text_model_id = #{textModelId},</if>
+            <if test="textModelUrl != null">text_model_url = #{textModelUrl},</if>
+            <if test="imageModelId != null">image_model_id = #{imageModelId},</if>
+            <if test="imageModelUrl != null">image_model_url = #{imageModelUrl},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="taskStatus != null">task_status = #{taskStatus},</if>
+            <if test="totalTextures != null">total_textures = #{totalTextures},</if>
+            <if test="completedTextures != null">completed_textures = #{completedTextures},</if>
+            <if test="costPoints != null">cost_points = #{costPoints},</if>
+            <if test="errorMsg != null">error_msg = #{errorMsg},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+        </trim>
+        where task_id = #{taskId}
+    </update>
+
+    <delete id="deleteMcGenerationTaskByTaskId" parameterType="Long">
+        delete from mc_generation_task where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteMcGenerationTaskByTaskIds" parameterType="Long">
+        delete from mc_generation_task where task_id in
+        <foreach item="taskId" collection="array" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+    </delete>
+
+    <select id="countProcessingTasksByUserId" parameterType="Long" resultType="int">
+        select count(*) from mc_generation_task
+        where user_id = #{userId}
+        and (task_status = 0 or task_status = 1 or task_status = 2 or task_status = 3)
+    </select>
+
+    <!-- 查询超时任务：状态为1/2/3（处理中），且开始时间超过10分钟 -->
+    <select id="selectTimeoutTasks" resultMap="McGenerationTaskResult">
+        <include refid="selectMcGenerationTaskVo"/>
+        where task_status in (1, 2, 3)
+        and start_time is not null
+        and TIMESTAMPDIFF(MINUTE, start_time, NOW()) > 10
+        order by start_time asc
+    </select>
+
+</mapper>

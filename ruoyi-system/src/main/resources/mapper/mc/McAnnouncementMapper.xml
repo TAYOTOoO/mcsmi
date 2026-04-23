@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McAnnouncementMapper">
+
+    <resultMap type="McAnnouncement" id="McAnnouncementResult">
+        <result property="announcementId"    column="announcement_id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="type"    column="type"    />
+        <result property="status"    column="status"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMcAnnouncementVo">
+        select announcement_id, title, content, image_url, type, status, start_time, end_time, create_by, create_time, update_by, update_time, remark from mc_announcement
+    </sql>
+
+    <select id="selectMcAnnouncementList" parameterType="McAnnouncement" resultMap="McAnnouncementResult">
+        <include refid="selectMcAnnouncementVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectActiveAnnouncements" resultMap="McAnnouncementResult">
+        <include refid="selectMcAnnouncementVo"/>
+        where status = '0'
+        and (start_time is null or start_time &lt;= now())
+        and (end_time is null or end_time &gt;= now())
+        order by create_time desc
+    </select>
+
+    <select id="selectMcAnnouncementByAnnouncementId" parameterType="Long" resultMap="McAnnouncementResult">
+        <include refid="selectMcAnnouncementVo"/>
+        where announcement_id = #{announcementId}
+    </select>
+
+    <insert id="insertMcAnnouncement" parameterType="McAnnouncement" useGeneratedKeys="true" keyProperty="announcementId">
+        insert into mc_announcement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="imageUrl != null">image_url,</if>
+            <if test="type != null">type,</if>
+            <if test="status != null">status,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="imageUrl != null">#{imageUrl},</if>
+            <if test="type != null">#{type},</if>
+            <if test="status != null">#{status},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMcAnnouncement" parameterType="McAnnouncement">
+        update mc_announcement
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate(),
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where announcement_id = #{announcementId}
+    </update>
+
+    <delete id="deleteMcAnnouncementByAnnouncementId" parameterType="Long">
+        delete from mc_announcement where announcement_id = #{announcementId}
+    </delete>
+
+    <delete id="deleteMcAnnouncementByAnnouncementIds" parameterType="String">
+        delete from mc_announcement where announcement_id in
+        <foreach item="announcementId" collection="array" open="(" separator="," close=")">
+            #{announcementId}
+        </foreach>
+    </delete>
+</mapper>

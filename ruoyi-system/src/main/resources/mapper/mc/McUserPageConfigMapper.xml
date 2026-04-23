@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mc.mapper.McUserPageConfigMapper">
+
+    <resultMap type="com.ruoyi.mc.domain.McUserPageConfig" id="McUserPageConfigResult">
+        <result property="configId"    column="config_id"    />
+        <result property="configKey"    column="config_key"    />
+        <result property="configValue"    column="config_value"    />
+        <result property="configType"    column="config_type"    />
+        <result property="pageName"    column="page_name"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="description"    column="description"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMcUserPageConfigVo">
+        select config_id, config_key, config_value, config_type, page_name, group_name, sort_order, description, status, create_by, create_time, update_by, update_time, remark
+        from mc_user_page_config
+    </sql>
+
+    <select id="selectMcUserPageConfigList" parameterType="com.ruoyi.mc.domain.McUserPageConfig" resultMap="McUserPageConfigResult">
+        <include refid="selectMcUserPageConfigVo"/>
+        <where>
+            <if test="configKey != null and configKey != ''"> and config_key like concat('%', #{configKey}, '%')</if>
+            <if test="configType != null and configType != ''"> and config_type = #{configType}</if>
+            <if test="pageName != null and pageName != ''"> and page_name = #{pageName}</if>
+            <if test="groupName != null and groupName != ''"> and group_name = #{groupName}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
+        </where>
+        order by page_name, group_name, sort_order
+    </select>
+
+    <select id="selectMcUserPageConfigByConfigId" parameterType="Long" resultMap="McUserPageConfigResult">
+        <include refid="selectMcUserPageConfigVo"/>
+        where config_id = #{configId}
+    </select>
+
+    <select id="selectMcUserPageConfigByConfigKey" parameterType="String" resultMap="McUserPageConfigResult">
+        <include refid="selectMcUserPageConfigVo"/>
+        where config_key = #{configKey}
+    </select>
+
+    <select id="selectMcUserPageConfigByPageName" parameterType="String" resultMap="McUserPageConfigResult">
+        <include refid="selectMcUserPageConfigVo"/>
+        where page_name = #{pageName} and status = '0'
+        order by group_name, sort_order
+    </select>
+
+    <insert id="insertMcUserPageConfig" parameterType="com.ruoyi.mc.domain.McUserPageConfig" useGeneratedKeys="true" keyProperty="configId">
+        insert into mc_user_page_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configKey != null and configKey != ''">config_key,</if>
+            <if test="configValue != null">config_value,</if>
+            <if test="configType != null and configType != ''">config_type,</if>
+            <if test="pageName != null and pageName != ''">page_name,</if>
+            <if test="groupName != null">group_name,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="description != null">description,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="configKey != null and configKey != ''">#{configKey},</if>
+            <if test="configValue != null">#{configValue},</if>
+            <if test="configType != null and configType != ''">#{configType},</if>
+            <if test="pageName != null and pageName != ''">#{pageName},</if>
+            <if test="groupName != null">#{groupName},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="description != null">#{description},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateMcUserPageConfig" parameterType="com.ruoyi.mc.domain.McUserPageConfig">
+        update mc_user_page_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configKey != null and configKey != ''">config_key = #{configKey},</if>
+            <if test="configValue != null">config_value = #{configValue},</if>
+            <if test="configType != null and configType != ''">config_type = #{configType},</if>
+            <if test="pageName != null and pageName != ''">page_name = #{pageName},</if>
+            <if test="groupName != null">group_name = #{groupName},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </trim>
+        where config_id = #{configId}
+    </update>
+
+    <delete id="deleteMcUserPageConfigByConfigId" parameterType="Long">
+        delete from mc_user_page_config where config_id = #{configId}
+    </delete>
+
+    <delete id="deleteMcUserPageConfigByConfigIds" parameterType="Long">
+        delete from mc_user_page_config where config_id in
+        <foreach item="configId" collection="array" open="(" separator="," close=")">
+            #{configId}
+        </foreach>
+    </delete>
+
+</mapper>
